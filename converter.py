@@ -571,15 +571,21 @@ def _convert_columns_section(section: dict) -> str:
                  for c in item.get("content", [])]
         cs = item.get("card_style", {})
         section_styling = section.get("styling", {})
-        # GPT sometimes puts styling directly on item, sometimes in card_style or section styling
+        item_bg = cs.get("background_color") or item.get("background_color")
+        item_border_color = cs.get("border_color") or item.get("border_color")
+        item_border_width = cs.get("border_width") or item.get("border_width")
+        # If no background AND no border, add a subtle border so card is visible
+        if not item_bg and not item_border_color:
+            item_border_color = "#e0e0e0"
+            item_border_width = "1px"
         col_blocks.append(_column(
             inner,
-            bg_color=cs.get("background_color") or item.get("background_color"),
+            bg_color=item_bg,
             text_color=cs.get("text_color") or item.get("text_color"),
             padding=cs.get("padding") or item.get("padding") or {"top": "20px", "right": "20px", "bottom": "20px", "left": "20px"},
             border_radius=cs.get("border_radius") or item.get("border_radius") or section_styling.get("card_border_radius"),
-            border_color=cs.get("border_color") or item.get("border_color"),
-            border_width=cs.get("border_width") or item.get("border_width"),
+            border_color=item_border_color,
+            border_width=item_border_width,
         ))
 
     # Section-level heading before columns
