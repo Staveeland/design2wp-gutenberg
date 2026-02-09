@@ -682,26 +682,12 @@ def _convert_logo_strip(section: dict) -> str:
             "caption": "",
         })
 
-    # Build logo columns with constrained image sizes
-    col_blocks = []
-    for img in gallery_images:
-        src = img.get("url") or _placeholder_svg(img.get("alt", "Logo"), 200, 80)
-        # Use raw HTML for logo images with constrained height
-        logo_html = (
-            f'<!-- wp:html -->\n'
-            f'<div style="text-align:center;padding:10px">'
-            f'<img src="{src}" alt="{img.get("alt", "Logo")}" '
-            f'style="max-height:50px;width:auto;object-fit:contain"/>'
-            f'</div>\n'
-            f'<!-- /wp:html -->'
-        )
-        col_blocks.append(_column([logo_html]))
-
-    logo_row = _columns(col_blocks, align="wide")
+    # Use wp:gallery with proper image blocks (editable in WP editor)
+    gallery_block = _gallery(gallery_images, columns=min(num_logos, 8), crop=False)
 
     bg = section.get("background_color")
     pad = section.get("padding", {"top": "40px", "bottom": "40px"})
-    all_inner = content_blocks + [logo_row]
+    all_inner = content_blocks + [gallery_block]
 
     return _group(all_inner, bg_color=bg, padding=pad, align="full")
 
@@ -790,6 +776,8 @@ def _theme_override_css() -> str:
         " .site-footer { display: none !important; }"
         " .entry-hero-container-inner { display: none !important; }"
         " .entry-content-wrap { padding: 0 !important; max-width: 100% !important; }"
+        " .wp-block-gallery:not(.is-cropped) .wp-block-image img"
+        " { max-height: 60px; width: auto; object-fit: contain; }"
     )
     return (
         f'<!-- wp:html -->\n'
