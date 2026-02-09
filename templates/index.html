@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design2WP Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+<div id="app" class="max-w-4xl mx-auto px-4 py-8">
+    <!-- Header -->
+    <header class="mb-8 flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-white cursor-pointer" onclick="showProjectList()">Design2WP</h1>
+            <p class="text-gray-400 text-sm">SVG → WordPress Gutenberg</p>
+        </div>
+        <div id="nav-back" class="hidden">
+            <button onclick="showProjectList()" class="text-sm text-blue-400 hover:text-blue-300">← Alle prosjekter</button>
+        </div>
+    </header>
+
+    <!-- Project List View -->
+    <div id="view-list">
+        <div class="bg-gray-900 rounded-lg p-6 mb-6">
+            <h2 class="text-lg font-semibold mb-4">Opprett nytt prosjekt</h2>
+            <form id="form-new-project" class="space-y-3">
+                <input name="name" placeholder="Prosjektnavn" required class="inp w-full">
+                <input name="wp_url" placeholder="WordPress URL (https://example.com)" required class="inp w-full">
+                <div class="grid grid-cols-2 gap-3">
+                    <input name="wp_user" placeholder="WP Brukernavn" required class="inp">
+                    <input name="wp_pass" type="password" placeholder="WP Passord" required class="inp">
+                </div>
+                <button type="submit" class="btn-primary">Opprett prosjekt</button>
+            </form>
+        </div>
+
+        <div id="project-list" class="space-y-2"></div>
+    </div>
+
+    <!-- Project Dashboard View -->
+    <div id="view-project" class="hidden space-y-6">
+        <div class="bg-gray-900 rounded-lg p-6">
+            <h2 id="proj-name" class="text-xl font-bold"></h2>
+            <p id="proj-url" class="text-gray-400 text-sm mt-1"></p>
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-gray-900 rounded-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold">Steg 1: Footer</h3>
+                <span id="footer-status" class="badge">❌ Ikke startet</span>
+            </div>
+            <form id="form-footer" class="flex gap-3 items-end">
+                <div class="flex-1">
+                    <label class="text-xs text-gray-400 block mb-1">Footer (PNG/JPG/SVG)</label>
+                    <input type="file" name="file" accept=".svg,.png,.jpg,.jpeg" required class="inp w-full text-sm">
+                </div>
+                <button type="submit" class="btn-primary whitespace-nowrap">Analyser & Bygg</button>
+            </form>
+            <div id="footer-msg" class="mt-2 text-sm"></div>
+        </div>
+
+        <!-- Header -->
+        <div class="bg-gray-900 rounded-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold">Steg 2: Header</h3>
+                <span id="header-status" class="badge">❌ Ikke startet</span>
+            </div>
+            <div class="space-y-3">
+                <form id="form-header" class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1">Header (PNG/JPG/SVG) (valgfritt)</label>
+                            <input type="file" name="file" accept=".svg,.png,.jpg,.jpeg" class="inp w-full text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1">Sidetittel</label>
+                            <input name="title" placeholder="Min Bedrift" class="inp w-full">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Menylenker (JSON: [{"title":"Hjem","url":"/"}])</label>
+                        <input name="menu_items" placeholder='[{"title":"Hjem","url":"/"},{"title":"Om oss","url":"/om-oss"}]' class="inp w-full text-sm">
+                    </div>
+                    <button type="submit" class="btn-primary">Bygg Header</button>
+                </form>
+            </div>
+            <div id="header-msg" class="mt-2 text-sm"></div>
+        </div>
+
+        <!-- Pages -->
+        <div class="bg-gray-900 rounded-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold">Steg 3: Sider</h3>
+                <button onclick="showAddPage()" class="btn-sm">+ Legg til side</button>
+            </div>
+
+            <!-- Add Page Form (hidden by default) -->
+            <div id="add-page-form" class="hidden mb-4 p-4 bg-gray-800 rounded-lg">
+                <form id="form-add-page" class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1">Sidetype</label>
+                            <select id="page-type" onchange="updatePageName()" class="inp w-full">
+                                <option value="Hjem">Hjem (forsiden)</option>
+                                <option value="Om oss">Om oss</option>
+                                <option value="Kontakt oss">Kontakt oss</option>
+                                <option value="Tjenester">Tjenester</option>
+                                <option value="Eiendommer">Eiendommer</option>
+                                <option value="custom">Custom...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1">Sidenavn</label>
+                            <input id="page-name" name="name" value="Hjem" required class="inp w-full">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Design (PNG/JPG fra Figma)</label>
+                        <input type="file" name="file" accept=".png,.jpg,.jpeg,.svg" class="inp w-full text-sm">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="submit" class="btn-primary">Legg til</button>
+                        <button type="button" onclick="hideAddPage()" class="btn-sm">Avbryt</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="pages-list" class="space-y-3"></div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="modal-preview" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-lg max-w-3xl w-full max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between p-4 border-b border-gray-700">
+                <h3 id="preview-title" class="font-semibold">Preview</h3>
+                <button onclick="closePreview()" class="text-gray-400 hover:text-white text-xl">✕</button>
+            </div>
+            <div class="p-4 overflow-auto flex-1">
+                <pre id="preview-analysis" class="text-xs text-gray-300 bg-gray-800 p-3 rounded overflow-auto max-h-60 mb-4 hidden"></pre>
+                <div id="preview-html" class="text-xs text-gray-300 bg-gray-800 p-3 rounded overflow-auto max-h-60"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentProject = null;
+
+// ─── API Helpers ───
+async function api(url, opts = {}) {
+    try {
+        const res = await fetch(url, opts);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || `Error ${res.status}`);
+        return data;
+    } catch (e) {
+        throw e;
+    }
+}
+
+function formData(form) {
+    return new FormData(form);
+}
+
+function statusBadge(status) {
+    const map = {
+        'done': '✅ Ferdig',
+        'published': '✅ Publisert',
+        'analyzed': '🔍 Analysert',
+        'error': '❌ Feil',
+        'pending': '⏳ Ikke startet',
+    };
+    const cls = status === 'done' || status === 'published' ? 'text-green-400' :
+                status === 'analyzed' ? 'text-yellow-400' :
+                status === 'error' ? 'text-red-400' : 'text-gray-400';
+    return `<span class="${cls}">${map[status] || status}</span>`;
+}
+
+function setMsg(id, text, isError = false) {
+    const el = document.getElementById(id);
+    el.innerHTML = `<span class="${isError ? 'text-red-400' : 'text-green-400'}">${text}</span>`;
+}
+
+function setLoading(btn, loading) {
+    btn.disabled = loading;
+    if (loading) {
+        btn.dataset.origText = btn.textContent;
+        btn.textContent = 'Jobber...';
+        btn.classList.add('opacity-50');
+    } else {
+        btn.textContent = btn.dataset.origText || btn.textContent;
+        btn.classList.remove('opacity-50');
+    }
+}
+
+// ─── Views ───
+async function showProjectList() {
+    document.getElementById('view-list').classList.remove('hidden');
+    document.getElementById('view-project').classList.add('hidden');
+    document.getElementById('nav-back').classList.add('hidden');
+    currentProject = null;
+
+    const projects = await api('/api/projects');
+    const list = document.getElementById('project-list');
+    if (projects.length === 0) {
+        list.innerHTML = '<p class="text-gray-500 text-sm">Ingen prosjekter ennå.</p>';
+    } else {
+        list.innerHTML = projects.map(p => `
+            <div class="bg-gray-800 rounded-lg p-4 cursor-pointer hover:bg-gray-750 transition-colors flex justify-between items-center"
+                 onclick="openProject(${p.id})">
+                <div>
+                    <span class="font-medium">${p.name}</span>
+                    <span class="text-gray-500 text-xs ml-2">${p.created_at || ''}</span>
+                </div>
+                <span class="text-gray-400">→</span>
+            </div>
+        `).join('');
+    }
+}
+
+async function openProject(pid) {
+    const proj = await api(`/api/projects/${pid}`);
+    currentProject = proj;
+
+    document.getElementById('view-list').classList.add('hidden');
+    document.getElementById('view-project').classList.remove('hidden');
+    document.getElementById('nav-back').classList.remove('hidden');
+
+    document.getElementById('proj-name').textContent = proj.name;
+    document.getElementById('proj-url').textContent = proj.wp_url;
+    document.getElementById('footer-status').innerHTML = statusBadge(proj.footer_status);
+    document.getElementById('header-status').innerHTML = statusBadge(proj.header_status);
+
+    renderPages(proj.pages || []);
+}
+
+function renderPages(pages) {
+    const list = document.getElementById('pages-list');
+    if (pages.length === 0) {
+        list.innerHTML = '<p class="text-gray-500 text-sm">Ingen sider lagt til ennå.</p>';
+        return;
+    }
+    list.innerHTML = pages.map(p => `
+        <div class="bg-gray-800 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-2">
+                <span class="font-medium">${p.name}</span>
+                ${statusBadge(p.status)}
+            </div>
+            <div class="flex gap-2 flex-wrap">
+                <label class="btn-sm cursor-pointer">
+                    📄 Last opp design
+                    <input type="file" accept=".svg,.png,.jpg,.jpeg" class="hidden" onchange="uploadAndAnalyze(${p.id}, this)">
+                </label>
+                ${p.has_analysis ? `
+                    <button onclick="publishPage(${p.id}, this)" class="btn-sm bg-green-700 hover:bg-green-600">🚀 Publiser</button>
+                    <button onclick="previewPage(${p.id})" class="btn-sm">👁 Preview</button>
+                ` : ''}
+                ${p.wp_url ? `<a href="${p.wp_url}" target="_blank" class="btn-sm bg-blue-700 hover:bg-blue-600">🔗 Se side</a>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+// ─── Page Actions ───
+function showAddPage() { document.getElementById('add-page-form').classList.remove('hidden'); }
+function hideAddPage() { document.getElementById('add-page-form').classList.add('hidden'); }
+
+function updatePageName() {
+    const sel = document.getElementById('page-type');
+    const inp = document.getElementById('page-name');
+    if (sel.value !== 'custom') {
+        inp.value = sel.value;
+    } else {
+        inp.value = '';
+        inp.focus();
+    }
+}
+
+async function uploadAndAnalyze(pageId, fileInput) {
+    if (!fileInput.files[0]) return;
+    const fd = new FormData();
+    fd.append('file', fileInput.files[0]);
+
+    try {
+        fileInput.disabled = true;
+        const res = await api(`/api/projects/${currentProject.id}/pages/${pageId}/analyze`, {
+            method: 'POST', body: fd
+        });
+        alert(`✅ Analyse ferdig! Fant ${res.sections_count} seksjoner.`);
+        openProject(currentProject.id);
+    } catch (e) {
+        alert('❌ Feil: ' + e.message);
+    } finally {
+        fileInput.disabled = false;
+    }
+}
+
+async function publishPage(pageId, btn) {
+    setLoading(btn, true);
+    try {
+        const res = await api(`/api/projects/${currentProject.id}/pages/${pageId}/publish`, { method: 'POST' });
+        alert(`✅ Publisert! ${res.wp_url || ''}`);
+        openProject(currentProject.id);
+    } catch (e) {
+        alert('❌ Feil: ' + e.message);
+    } finally {
+        setLoading(btn, false);
+    }
+}
+
+async function previewPage(pageId) {
+    const res = await api(`/api/projects/${currentProject.id}/pages/${pageId}/preview`);
+    document.getElementById('modal-preview').classList.remove('hidden');
+    document.getElementById('preview-title').textContent = 'Preview';
+
+    if (res.analysis) {
+        const el = document.getElementById('preview-analysis');
+        el.classList.remove('hidden');
+        el.textContent = JSON.stringify(res.analysis, null, 2);
+    }
+    document.getElementById('preview-html').textContent = res.html || '(ingen blokker generert)';
+}
+
+function closePreview() {
+    document.getElementById('modal-preview').classList.add('hidden');
+    document.getElementById('preview-analysis').classList.add('hidden');
+}
+
+// ─── Form Handlers ───
+document.getElementById('form-new-project').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type=submit]');
+    setLoading(btn, true);
+    try {
+        const res = await api('/api/projects', { method: 'POST', body: formData(e.target) });
+        e.target.reset();
+        openProject(res.id);
+    } catch (err) {
+        alert('❌ ' + err.message);
+    } finally {
+        setLoading(btn, false);
+    }
+});
+
+document.getElementById('form-footer').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type=submit]');
+    setLoading(btn, true);
+    try {
+        const res = await api(`/api/projects/${currentProject.id}/footer`, {
+            method: 'POST', body: formData(e.target)
+        });
+        setMsg('footer-msg', `Ferdig! ${res.sections} seksjoner funnet.`);
+        document.getElementById('footer-status').innerHTML = statusBadge('done');
+    } catch (err) {
+        setMsg('footer-msg', err.message, true);
+    } finally {
+        setLoading(btn, false);
+    }
+});
+
+document.getElementById('form-header').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type=submit]');
+    setLoading(btn, true);
+    try {
+        const res = await api(`/api/projects/${currentProject.id}/header`, {
+            method: 'POST', body: formData(e.target)
+        });
+        setMsg('header-msg', 'Header bygget!');
+        document.getElementById('header-status').innerHTML = statusBadge('done');
+    } catch (err) {
+        setMsg('header-msg', err.message, true);
+    } finally {
+        setLoading(btn, false);
+    }
+});
+
+function uploadWithProgress(url, formData, btn) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        const origText = btn.textContent;
+        xhr.upload.addEventListener('progress', (e) => {
+            if (e.lengthComputable) {
+                const pct = Math.round((e.loaded / e.total) * 100);
+                btn.textContent = `Laster opp... ${pct}%`;
+            }
+        });
+        xhr.addEventListener('load', () => {
+            btn.textContent = 'Analyserer...';
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve(JSON.parse(xhr.responseText));
+            } else {
+                try { reject(new Error(JSON.parse(xhr.responseText).detail)); }
+                catch { reject(new Error(`Error ${xhr.status}`)); }
+            }
+        });
+        xhr.addEventListener('error', () => reject(new Error('Nettverksfeil')));
+        xhr.addEventListener('abort', () => reject(new Error('Avbrutt')));
+        xhr.open('POST', url);
+        xhr.send(formData);
+    });
+}
+
+document.getElementById('form-add-page').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type=submit]');
+    setLoading(btn, true);
+    try {
+        const res = await uploadWithProgress(
+            `/api/projects/${currentProject.id}/pages`,
+            formData(e.target), btn
+        );
+        hideAddPage();
+        e.target.reset();
+        // Auto-analyze if PNG was uploaded
+        if (res.has_png) {
+            btn.textContent = 'Analyserer med GPT-5.2...';
+            await api(`/api/projects/${currentProject.id}/pages/${res.id}/analyze`, { method: 'POST' });
+        }
+        openProject(currentProject.id);
+    } catch (err) {
+        alert('❌ ' + err.message);
+    } finally {
+        setLoading(btn, false);
+    }
+});
+
+// ─── Init ───
+showProjectList();
+</script>
+</body>
+</html>

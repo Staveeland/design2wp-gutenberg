@@ -1,0 +1,8 @@
+uploads/
+output/
+cache/
+*.db
+*.db-shm
+*.db-wal
+test-*
+__pycache__/

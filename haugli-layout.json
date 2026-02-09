@@ -1,0 +1,78 @@
+{
+  "page_title": "Haugli Eiendom – Forside",
+  "sections": [
+    {
+      "type": "hero",
+      "background": {"type": "image", "value": "https://placehold.co/1920x800/3B2314/E8731A?text=Haugli+Eiendom+Hero", "overlay_opacity": 30},
+      "min_height": 700,
+      "align": "left",
+      "content": [
+        {"type": "heading", "text": "Haugli Eiendom", "level": 1, "color": "#ffffff", "font_size": "48px"},
+        {"type": "paragraph", "text": "En solid eiendomsaktør på Haugalandet i over 40 år. Haugli Eiendom utvikler og forvalter næringslokaler, boliger og sentrumsbygg. Vår erfaring og lokale forankring gir trygge rammer for både bedrifter og leietakere.", "color": "#ffffff", "font_size": "18px"},
+        {"type": "buttons", "items": [
+          {"text": "Våre eiendommer", "url": "#", "style": "fill", "bg_color": "#E8731A", "text_color": "#ffffff"},
+          {"text": "Ledige eiendommer", "url": "#", "style": "outline", "bg_color": "#ffffff", "text_color": "#ffffff"}
+        ]}
+      ]
+    },
+    {
+      "type": "cta",
+      "background_color": "#3B2314",
+      "content": [
+        {"type": "heading", "text": "Leter dere etter lokale?", "level": 2, "color": "#ffffff", "font_size": "36px"},
+        {"type": "paragraph", "text": "Haugli Eiendom tilbyr et bredt utvalg næringslokaler i Haugesund og på Haugalandet. Vi har moderne lokaler til handel, kontor, lager og produksjon – tilpasset bedriftens behov. Med over 40 års erfaring innen næringseiendom og eiendomsforvaltning, legger vi vekt på fleksible løsninger, langsiktige leieavtaler og trygge rammer. Ta kontakt med oss i dag for å høre mer om våre ledige lokaler – kanskje vi har den perfekte plasseringen for din virksomhet.", "color": "#ffffff", "font_size": "18px"},
+        {"type": "buttons", "items": [
+          {"text": "Ta kontakt", "url": "/kontakt-oss", "style": "fill", "bg_color": "#E8731A", "text_color": "#ffffff"}
+        ]}
+      ]
+    },
+    {
+      "type": "columns",
+      "columns": 3,
+      "background_color": "#ffffff",
+      "padding": {"top": "60px", "bottom": "60px"},
+      "items": [
+        {
+          "content": [
+            {"type": "image", "alt": "Tesalongen", "width": 400, "height": 300},
+            {"type": "paragraph", "text": "Tesalongen – Haugesund, 72 m²", "font_size": "16px"}
+          ]
+        },
+        {
+          "content": [
+            {"type": "image", "alt": "Husnes", "width": 400, "height": 300},
+            {"type": "paragraph", "text": "Husnes – Haugesund, 72 m²", "font_size": "16px"}
+          ]
+        },
+        {
+          "content": [
+            {"type": "image", "alt": "Rennesøygata 8", "width": 400, "height": 300},
+            {"type": "paragraph", "text": "Rennesøygata 8 – Haugesund, 72 m²", "font_size": "16px"}
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text-section",
+      "background_color": "#ffffff",
+      "align": "center",
+      "content": [
+        {"type": "heading", "text": "Noen av våre leietakere", "level": 2, "color": "#3B2314", "font_size": "36px"}
+      ]
+    },
+    {
+      "type": "columns",
+      "columns": 6,
+      "background_color": "#ffffff",
+      "padding": {"top": "20px", "bottom": "60px"},
+      "items": [
+        {"content": [{"type": "image", "alt": "SPAR", "width": 150, "height": 50}]},
+        {"content": [{"type": "image", "alt": "REMA 1000", "width": 150, "height": 50}]},
+        {"content": [{"type": "image", "alt": "EXTRA", "width": 150, "height": 50}]},
+        {"content": [{"type": "image", "alt": "Europris", "width": 150, "height": 50}]},
+        {"content": [{"type": "image", "alt": "Ahlsell", "width": 150, "height": 50}]},
+        {"content": [{"type": "image", "alt": "Circle K", "width": 150, "height": 50}]}
+      ]
+    }
+  ]
+}
